@@ -6,20 +6,26 @@ import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.Locale;
 
 public class Weather {
+    private final String entrypointUrl = "https://api.weather.yandex.ru/v2/forecast";
     private final String apiKey;
+    private final double lat;
+    private final double lon;
     private String rawResponse;
     private WeatherResponseModel responseModel;
 
-    public Weather(String apiKey) {
+    public Weather(String apiKey, double lat, double lon) {
         this.apiKey = apiKey;
+        this.lat = lat;
+        this.lon = lon;
 
         this.requestData();
     }
 
     private URI getApiURI() throws URISyntaxException {
-        return new URI("https://api.weather.yandex.ru/v2/forecast?lat=52.37125&lon=4.89388");
+        return new URI(String.format(Locale.US, "%s?lat=%f&lon=%f", this.entrypointUrl, this.lat, this.lon));
     }
 
     private HttpRequest createRequest() throws URISyntaxException {
@@ -45,6 +51,7 @@ public class Weather {
     }
 
     private void proceedResponse(String jsonString) {
+        System.out.println(jsonString);
         this.rawResponse = jsonString;
         this.responseModel = new Gson().fromJson(jsonString, WeatherResponseModel.class);
     }
@@ -54,7 +61,7 @@ public class Weather {
     }
 
     public void printTemperature()  {
-        System.out.printf("Сейчас за окошком: %s\n", this.responseModel.fact.temp);
+        System.out.printf(Locale.US, "Сейчас за окошком: %s\n", this.responseModel.fact.temp);
     }
 
     public void printAverageTemp(DayPart dayPart, int limit)  {
@@ -68,6 +75,6 @@ public class Weather {
             avg += forecast.parts.get(DayPart.day).temp_avg;
         }
 
-        System.out.printf("Средняя дневная температура (%s) за %d д: %.1f\n", dayPart, limit, avg / limit);
+        System.out.printf(Locale.US, "Средняя дневная температура (%s) за %d д: %.1f\n", dayPart, limit, avg / limit);
     }
 }

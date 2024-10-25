@@ -11,10 +11,10 @@ public class Main {
             return;
         }
 
-        Weather weather = new Weather(apiKey);
+        Weather weather = new Weather(apiKey, 52.37125, 4.89388);
 
         weather.printTemperature();
-        weather.printRawResponse();
         weather.printAverageTemp(DayPart.day, 3);
+        weather.printRawResponse();
     }
 }
