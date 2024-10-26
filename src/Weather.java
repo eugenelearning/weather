@@ -51,7 +51,6 @@ public class Weather {
     }
 
     private void proceedResponse(String jsonString) {
-        System.out.println(jsonString);
         this.rawResponse = jsonString;
         this.responseModel = new Gson().fromJson(jsonString, WeatherResponseModel.class);
     }
